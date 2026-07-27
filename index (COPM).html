@@ -1,0 +1,1081 @@
+<style>
+  :root{
+    --bg:#0F1620;
+    --surface:#17212C;
+    --surface-2:#1E2A38;
+    --line:#2A3948;
+    --text:#E7EDF3;
+    --text-dim:#8CA0B3;
+    --amber:#E8A33D;
+    --amber-dim:#5C4523;
+    --teal:#3FB8AF;
+    --teal-dim:#1D4642;
+    --coral:#E1614B;
+    --coral-dim:#4A2620;
+    --font-display:'Space Grotesk',sans-serif;
+    --font-body:'IBM Plex Sans',sans-serif;
+    --font-mono:'IBM Plex Mono',monospace;
+  }
+  #icaRoot{
+    font-family:var(--font-body);
+    background:var(--bg);
+    color:var(--text);
+    padding:28px;
+    border-radius:12px;
+    max-width:1180px;
+    margin:0 auto;
+    line-height:1.4;
+  }
+  #icaRoot *{box-sizing:border-box;}
+  .ica-hero{
+    display:flex;justify-content:space-between;align-items:flex-end;
+    border-bottom:1px solid var(--line);
+    padding-bottom:20px;margin-bottom:24px;flex-wrap:wrap;gap:16px;
+  }
+  .ica-eyebrow{
+    font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--amber);margin-bottom:6px;
+  }
+  .ica-title{
+    font-family:var(--font-display);font-size:28px;font-weight:600;margin:0;
+    letter-spacing:-.01em;
+  }
+  .ica-sub{color:var(--text-dim);font-size:13px;margin-top:6px;max-width:520px;}
+  .ica-month{
+    font-family:var(--font-mono);background:var(--surface-2);border:1px solid var(--line);
+    border-radius:8px;padding:8px 12px;color:var(--text);font-size:13px;
+  }
+  .ica-section{
+    background:var(--surface);border:1px solid var(--line);border-radius:12px;
+    padding:20px;margin-bottom:18px;
+  }
+  .ica-section h2{
+    font-family:var(--font-display);font-size:15px;font-weight:600;margin:0 0 4px 0;
+    display:flex;align-items:center;gap:8px;
+  }
+  .ica-section h2 .n{
+    font-family:var(--font-mono);font-size:11px;color:var(--bg);background:var(--amber);
+    width:20px;height:20px;border-radius:5px;display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+  }
+  .ica-section .hint{color:var(--text-dim);font-size:12.5px;margin:2px 0 14px 28px;}
+  .ica-upload-grid{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin-left:28px;
+  }
+  .ica-upload{
+    border:1.5px dashed var(--line);border-radius:10px;padding:16px;text-align:center;
+    cursor:pointer;transition:border-color .15s, background .15s;position:relative;
+  }
+  .ica-upload:hover{border-color:var(--amber);background:rgba(232,163,61,.04);}
+  .ica-upload.loaded{border-style:solid;border-color:var(--teal);background:rgba(63,184,175,.06);}
+  .ica-upload input{position:absolute;inset:0;opacity:0;cursor:pointer;}
+  .ica-upload .lbl{font-family:var(--font-display);font-size:13.5px;font-weight:600;}
+  .ica-upload .st{font-family:var(--font-mono);font-size:11px;color:var(--text-dim);margin-top:5px;}
+  .ica-upload.loaded .st{color:var(--teal);}
+  .ica-upload .req{color:var(--coral);font-size:10px;}
+  .ica-map-wrap{margin-left:28px;margin-top:16px;display:none;}
+  .ica-map-wrap.show{display:block;}
+  .ica-map-table{width:100%;border-collapse:collapse;font-size:12.5px;}
+  .ica-map-table th{
+    text-align:left;font-family:var(--font-mono);font-weight:500;color:var(--text-dim);
+    font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;padding:6px 8px;
+    border-bottom:1px solid var(--line);
+  }
+  .ica-map-table td{padding:5px 8px;border-bottom:1px solid rgba(42,57,72,.5);color:var(--text);}
+  .ica-map-table select{
+    width:100%;background:var(--surface-2);color:var(--text);border:1px solid var(--line);
+    border-radius:6px;padding:5px 7px;font-family:var(--font-mono);font-size:12px;
+  }
+  .ica-checkbox-row{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:12.5px;color:var(--text-dim);}
+  .ica-btn{
+    font-family:var(--font-display);font-weight:600;font-size:13.5px;
+    background:var(--amber);color:#1B1305;border:none;border-radius:8px;
+    padding:11px 22px;cursor:pointer;transition:transform .1s, background .15s;
+  }
+  .ica-btn:hover{background:#F3B457;}
+  .ica-btn:active{transform:scale(.98);}
+  .ica-btn:disabled{background:var(--surface-2);color:var(--text-dim);cursor:not-allowed;}
+  .ica-btn.secondary{background:var(--surface-2);color:var(--text);border:1px solid var(--line);}
+  .ica-btn.secondary:hover{background:var(--surface-2);border-color:var(--teal);color:var(--teal);}
+  .ica-actions{display:flex;gap:10px;margin-left:28px;margin-top:16px;flex-wrap:wrap;}
+  .ica-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;}
+  .ica-kpi{background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:16px;}
+  .ica-kpi .lbl{font-family:var(--font-mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--text-dim);}
+  .ica-kpi .val{font-family:var(--font-display);font-size:26px;font-weight:600;margin-top:6px;}
+  .ica-kpi .sub{font-size:11.5px;color:var(--text-dim);margin-top:4px;}
+  .ica-kpi.warn .val{color:var(--coral);}
+  .ica-kpi.ok .val{color:var(--teal);}
+  .ica-bar-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid rgba(42,57,72,.5);font-size:12.5px;}
+  .ica-bar-row:last-child{border-bottom:none;}
+  .ica-bar-row .name{width:190px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text);}
+  .ica-bar-track{flex:1;height:8px;background:var(--surface-2);border-radius:4px;overflow:hidden;}
+  .ica-bar-fill{height:100%;background:linear-gradient(90deg,var(--teal),var(--amber));}
+  .ica-bar-pct{font-family:var(--font-mono);width:70px;text-align:right;flex-shrink:0;}
+  table.ica-table{width:100%;border-collapse:collapse;font-size:12px;}
+  table.ica-table th{
+    text-align:left;font-family:var(--font-mono);font-weight:500;color:var(--text-dim);
+    font-size:10px;text-transform:uppercase;letter-spacing:.05em;padding:7px 8px;
+    border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--surface);
+  }
+  table.ica-table td{padding:6px 8px;border-bottom:1px solid rgba(42,57,72,.5);font-family:var(--font-mono);color:var(--text);}
+  table.ica-table tr:hover td{background:rgba(232,163,61,.04);}
+  .ica-scroll{max-height:320px;overflow-y:auto;border:1px solid var(--line);border-radius:8px;}
+  .ica-tag{font-family:var(--font-mono);font-size:10.5px;padding:2px 7px;border-radius:5px;}
+  .ica-tag.sim{background:var(--teal-dim);color:var(--teal);}
+  .ica-tag.nao{background:var(--coral-dim);color:var(--coral);}
+  .ica-empty{color:var(--text-dim);font-size:12.5px;text-align:center;padding:24px;margin-left:28px;}
+  .ica-log{font-family:var(--font-mono);font-size:11px;color:var(--text-dim);margin-left:28px;margin-top:8px;white-space:pre-wrap;}
+  .ica-flex-cols{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-left:28px;}
+  @media (max-width:760px){.ica-flex-cols{grid-template-columns:1fr;}}
+  .ica-trend-wrap{margin-left:28px;}
+  .ica-snap-row{display:flex;align-items:center;justify-content:space-between;padding:7px 10px;border-bottom:1px solid rgba(42,57,72,.5);font-size:12px;}
+  .ica-snap-row:last-child{border-bottom:none;}
+  .ica-snap-row .m{font-family:var(--font-mono);color:var(--text);}
+  .ica-snap-row .v{font-family:var(--font-mono);color:var(--text-dim);}
+  .ica-snap-del{
+    font-family:var(--font-mono);font-size:11px;background:transparent;color:var(--coral);
+    border:1px solid var(--coral-dim);border-radius:6px;padding:3px 9px;cursor:pointer;
+  }
+  .ica-snap-del:hover{background:var(--coral-dim);}
+  .ica-pctcell{font-family:var(--font-mono);text-align:right;white-space:nowrap;}
+  .ica-pctcell.p-ok{color:var(--teal);}
+  .ica-pctcell.p-warn{color:var(--amber);}
+  .ica-pctcell.p-bad{color:var(--coral);}
+  .ica-pctcell.p-empty{color:var(--text-dim);opacity:.5;}
+  tr.ica-total-row td{background:var(--surface-2);font-weight:600;border-top:1.5px solid var(--line);}
+  td.ica-rowname, th.ica-rowname{font-family:var(--font-body);position:sticky;left:0;background:var(--surface);white-space:nowrap;color:var(--text);}
+  tr.ica-total-row td.ica-rowname{background:var(--surface-2);}
+  .ica-toast{
+    position:fixed;bottom:24px;right:24px;background:var(--teal);color:#04211E;
+    font-family:var(--font-display);font-weight:600;font-size:13px;padding:12px 18px;
+    border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.4);opacity:0;pointer-events:none;
+    transition:opacity .25s, transform .25s;transform:translateY(8px);z-index:999;
+  }
+  .ica-toast.show{opacity:1;transform:translateY(0);}
+</style>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+// Polyfill for window.storage (Claude.ai artifact API) using browser localStorage,
+// so this app works standalone (GitHub Pages, Teams, etc.)
+(function(){
+  if(window.storage) return; // already provided by the host (e.g. claude.ai)
+  const ns = (shared)=> shared ? 'ica-shared:' : 'ica-priv:';
+  window.storage = {
+    async get(key, shared){
+      const raw = localStorage.getItem(ns(shared)+key);
+      if(raw==null) return null;
+      return {key, value: raw, shared: !!shared};
+    },
+    async set(key, value, shared){
+      localStorage.setItem(ns(shared)+key, value);
+      return {key, value, shared: !!shared};
+    },
+    async delete(key, shared){
+      const k = ns(shared)+key;
+      const existed = localStorage.getItem(k)!=null;
+      localStorage.removeItem(k);
+      return {key, deleted:existed, shared: !!shared};
+    },
+    async list(prefix, shared){
+      const p = ns(shared)+(prefix||'');
+      const keys=[];
+      for(let i=0;i<localStorage.length;i++){
+        const k = localStorage.key(i);
+        if(k.startsWith(p)) keys.push(k.slice(ns(shared).length));
+      }
+      return {keys, prefix, shared: !!shared};
+    }
+  };
+})();
+</script>
+
+<div id="icaRoot">
+  <div class="ica-hero">
+    <div>
+      <div class="ica-eyebrow">Indicador &middot; Apura&ccedil;&atilde;o mensal</div>
+      <h1 class="ica-title">Indisponibilidade de Contratos Ativos</h1>
+      <p class="ica-sub">Mede a quantidade de itens e o valor (CMM12 &times; Valor Unit&aacute;rio) sem contrato ativo dispon&iacute;vel, cruzando Stockout 2.0 com a base de Contratos (SIPRM).</p>
+    </div>
+    <div>
+      <label style="display:block;font-family:var(--font-mono);font-size:10.5px;color:var(--text-dim);margin-bottom:5px;">COMPET&Ecirc;NCIA</label>
+      <input type="month" id="icaMonth" class="ica-month">
+    </div>
+  </div>
+
+  <!-- HISTORY (always visible when there's saved data) -->
+  <div id="historyView">
+    <div class="ica-section" id="trendSection" style="display:none;">
+      <h2>Hist&oacute;rico de % Indisponibilidade (valor)</h2>
+      <div class="ica-trend-wrap" id="trendChart"></div>
+      <div class="ica-trend-wrap" id="snapshotList" style="margin-top:14px;"></div>
+    </div>
+
+    <div class="ica-section" id="acumSection" style="display:none;">
+      <h2>Vis&atilde;o Acumulada &mdash; &uacute;ltimos 12 meses</h2>
+      <p class="hint" style="margin-left:0;">Mesmo formato do e-mail mensal: % de indisponibilidade por m&ecirc;s, mais a coluna Acumulado (m&eacute;dia ponderada pelo Consumo, n&atilde;o m&eacute;dia simples).</p>
+      <div style="font-family:var(--font-mono);font-size:11.5px;color:var(--text-dim);margin:10px 0 6px 0;">Por Categoria</div>
+      <div class="ica-scroll" style="max-height:none;"><table class="ica-table" id="acumCatTable"></table></div>
+      <div style="font-family:var(--font-mono);font-size:11.5px;color:var(--text-dim);margin:18px 0 6px 0;">Por Empresa</div>
+      <div class="ica-scroll" style="max-height:none;"><table class="ica-table" id="acumEmpTable"></table></div>
+    </div>
+  </div>
+
+  <div class="ica-actions" id="toggleFlowWrap" style="display:none;">
+    <button class="ica-btn" id="btnToggleFlow">+ Nova apura&ccedil;&atilde;o mensal</button>
+  </div>
+
+  <!-- UPLOAD / APURAÇÃO FLOW -->
+  <div id="apuracaoFlow">
+    <!-- STEP 1: UPLOADS -->
+    <div class="ica-section">
+      <h2><span class="n">1</span>Bases do m&ecirc;s</h2>
+      <p class="hint">Stockout e Contratos Ativos mudam todo m&ecirc;s. Auxiliar (Categoria) e Expurgo costumam se repetir &mdash; uma vez carregados, ficam salvos neste navegador.</p>
+      <div class="ica-upload-grid">
+        <label class="ica-upload" id="up-stockout">
+          <input type="file" accept=".xlsx,.xls,.csv" data-key="stockout">
+          <div class="lbl">Stockout 2.0</div>
+          <div class="st">Nenhum arquivo <span class="req">&middot; obrigat&oacute;rio</span></div>
+        </label>
+        <label class="ica-upload" id="up-contratos">
+          <input type="file" accept=".xlsx,.xls,.csv,.txt" data-key="contratos">
+          <div class="lbl">Contratos Ativos (SIPRM)</div>
+          <div class="st">Nenhum arquivo <span class="req">&middot; obrigat&oacute;rio</span></div>
+        </label>
+        <label class="ica-upload" id="up-auxiliar">
+          <input type="file" accept=".xlsx,.xls,.csv" data-key="auxiliar">
+          <div class="lbl">Auxiliar (Classe &rarr; Categoria)</div>
+          <div class="st">Nenhum arquivo</div>
+        </label>
+        <label class="ica-upload" id="up-expurgo">
+          <input type="file" accept=".xlsx,.xls,.csv" data-key="expurgo">
+          <div class="lbl">Expurgo</div>
+          <div class="st">Nenhum arquivo</div>
+        </label>
+      </div>
+      <div class="ica-log" id="icaLog"></div>
+    </div>
+
+    <!-- STEP 2: MAPPING -->
+    <div class="ica-section" id="secMapping" style="display:none;">
+      <h2><span class="n">2</span>Confer&ecirc;ncia de colunas</h2>
+      <p class="hint">Confirmo automaticamente qual coluna de cada base representa cada campo. Ajuste se algo estiver errado &mdash; a apura&ccedil;&atilde;o s&oacute; roda com esses vínculos corretos.</p>
+      <div class="ica-map-wrap show" id="mapContainer"></div>
+      <div class="ica-checkbox-row" id="depositoToggleWrap" style="margin-left:28px;">
+        <input type="checkbox" id="useDeposito" checked>
+        <label for="useDeposito">Validar tamb&eacute;m por Dep&oacute;sito no cruzamento de contrato (al&eacute;m de Empresa + C&oacute;digo Material)</label>
+      </div>
+
+      <div class="ica-map-wrap show" id="empresaMapContainer" style="margin-top:18px;"></div>
+    </div>
+
+    <!-- STEP 3: RUN -->
+    <div class="ica-actions">
+      <button class="ica-btn" id="btnApurar" disabled>Apurar indicador</button>
+      <button class="ica-btn secondary" id="btnClearStorage">Limpar dados salvos</button>
+    </div>
+  </div>
+
+  <!-- RESULTS -->
+  <div id="results" style="display:none;">
+    <div class="ica-section">
+      <h2><span class="n">3</span>Resultado &mdash; <span id="resMonthLabel"></span></h2>
+      <div class="ica-kpis" id="kpiGrid"></div>
+    </div>
+
+    <div class="ica-flex-cols">
+      <div class="ica-section" style="margin-left:0;">
+        <h2 style="margin-left:0;">Indisponibilidade por Categoria</h2>
+        <div id="catBars"></div>
+      </div>
+      <div class="ica-section" style="margin-left:0;">
+        <h2 style="margin-left:0;">Indisponibilidade por Empresa</h2>
+        <div id="empBars"></div>
+      </div>
+    </div>
+
+    <div class="ica-section">
+      <h2>Itens sem contrato &mdash; maiores valores</h2>
+      <div class="ica-scroll">
+        <table class="ica-table" id="topItemsTable"></table>
+      </div>
+    </div>
+
+    <div class="ica-actions" style="margin-left:0;">
+      <button class="ica-btn" id="btnSaveSnapshot">Salvar competência no histórico</button>
+      <button class="ica-btn secondary" id="btnExport">Baixar Excel da apuração</button>
+      <button class="ica-btn secondary" id="btnResetMonth">Iniciar apuração do próximo mês</button>
+    </div>
+  </div>
+
+  <div class="ica-toast" id="icaToast"></div>
+</div>
+
+<script>
+(function(){
+  const $ = (sel,ctx)=> (ctx||document).querySelector(sel);
+  const $all = (sel,ctx)=> Array.from((ctx||document).querySelectorAll(sel));
+
+  const META_INDISP = 0.03; // meta: indisponibilidade até 3% do valor total
+
+  const DEFAULT_EMPRESA_MAP = [
+    {sigla:'EMG', deposito:'', codEmpresa:'1'},
+    {sigla:'ESE', deposito:'', codEmpresa:'20'},
+    {sigla:'EPB', deposito:'', codEmpresa:'27'},
+    {sigla:'ETO', deposito:'', codEmpresa:'190'},
+    {sigla:'EMT', deposito:'', codEmpresa:'191'},
+    {sigla:'EMS', deposito:'', codEmpresa:'193'},
+    {sigla:'ESS', deposito:'', codEmpresa:'218'},
+    {sigla:'EAC', deposito:'', codEmpresa:'226'},
+    {sigla:'ERO', deposito:'', codEmpresa:'229'}
+  ];
+
+  const state = {
+    files: {}, // key -> {headers, rows}
+    mapping: {}, // fileKey -> {field: header}
+    empresaMap: DEFAULT_EMPRESA_MAP.slice(), // array of {sigla, deposito, codEmpresa}
+    useDeposito: true,
+    computed: null
+  };
+
+  function resolveCodEmpresa(sigla, deposito){
+    const s = normKey(sigla), d = normKey(deposito);
+    let hit = state.empresaMap.find(r=> normKey(r.sigla)===s && normKey(r.deposito)===d);
+    if(hit) return hit.codEmpresa;
+    hit = state.empresaMap.find(r=> normKey(r.sigla)===s && r.deposito==='');
+    if(hit) return hit.codEmpresa;
+    return null;
+  }
+
+  const FIELD_SPECS = {
+    stockout: {
+      label: 'Stockout 2.0',
+      fields: {
+        empresa: {label:'Empresa', kw:['empresa']},
+        deposito: {label:'Depósito', kw:['deposit','depósit']},
+        classe: {label:'Classe', kw:['classe']},
+        codigo: {label:'Código Material', kw:['codigo material','código material','cod material','cod. material','codmat']},
+        descricao: {label:'Descrição', kw:['descri']},
+        valorUnit: {label:'Valor Unitário', kw:['valor unit']},
+        cmm12: {label:'CMM12', kw:['cmm12','cmm 12']}
+      }
+    },
+    contratos: {
+      label:'Contratos Ativos',
+      fields: {
+        codEmpresa: {label:'cod_empresa', kw:['cod_empresa','codempresa']},
+        nomeEmpresa: {label:'nome_empresa (referência)', kw:['nome_empresa','nomeempresa']},
+        deposito: {label:'Depósito (cod_regional_contrato_compra)', kw:['cod_regional_contrato_compra','regional_contrato_compra']},
+        codigo: {label:'Código Material', kw:['codmat']},
+      }
+    },
+    auxiliar: {
+      label:'Auxiliar',
+      fields: {
+        classe: {label:'Código (Classe)', kw:['codigo','código','cod']},
+        categoria: {label:'Categoria', kw:['categoria']}
+      }
+    },
+    expurgo: {
+      label:'Expurgo',
+      fields: {
+        codigo: {label:'Código Material', kw:['codigo material','código material','codmat']},
+        resposta: {label:'Resposta/Status', kw:['resposta','status']}
+      }
+    }
+  };
+
+  function markLoaded(labelEl, on){
+    labelEl.classList.toggle('loaded', on);
+    const card = labelEl.closest('.ica-upload-card');
+    if(card) card.classList.toggle('loaded', on);
+  }
+
+  function log(msg){
+    const el = $('#icaLog');
+    el.textContent += (el.textContent?'\n':'') + msg;
+  }
+
+  function normHeader(h){
+    return String(h||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim();
+  }
+
+  function guessColumn(headers, kwList){
+    const normed = headers.map(h=>({h, n:normHeader(h)}));
+    for(const kw of kwList){
+      const hit = normed.find(x=>x.n.includes(kw));
+      if(hit) return hit.h;
+    }
+    return headers[0]||'';
+  }
+
+  function readFile(file){
+    return new Promise((resolve,reject)=>{
+      const reader = new FileReader();
+      reader.onload = (e)=>{
+        try{
+          const data = new Uint8Array(e.target.result);
+          const wb = XLSX.read(data, {type:'array', cellDates:true});
+          const sheetName = wb.SheetNames[0];
+          const ws = wb.Sheets[sheetName];
+          const json = XLSX.utils.sheet_to_json(ws, {defval:null, raw:true});
+          const headers = json.length ? Object.keys(json[0]) : (XLSX.utils.sheet_to_json(ws,{header:1})[0]||[]);
+          resolve({headers, rows:json, sheetName});
+        }catch(err){ reject(err); }
+      };
+      reader.onerror = reject;
+      reader.readAsArrayBuffer(file);
+    });
+  }
+
+  async function handleFileInput(inputEl){
+    const key = inputEl.dataset.key;
+    const file = inputEl.files[0];
+    if(!file) return;
+    const wrap = inputEl.closest('.ica-upload');
+    try{
+      const parsed = await readFile(file);
+      state.files[key] = parsed;
+      markLoaded(wrap, true);
+      $('.lbl',wrap).textContent = FIELD_SPECS[key].label;
+      $('.st',wrap).textContent = `${file.name} · ${parsed.rows.length.toLocaleString('pt-BR')} linhas`;
+      log(`✓ ${FIELD_SPECS[key].label}: ${parsed.rows.length.toLocaleString('pt-BR')} linhas carregadas.`);
+      if(key==='auxiliar') await saveStore('auxiliar-file', parsed, false);
+      if(key==='expurgo') await saveStore('expurgo-file', parsed, false);
+      refreshMappingUI();
+      checkReady();
+    }catch(err){
+      log(`✗ Erro ao ler ${FIELD_SPECS[key].label}: ${err.message}`);
+    }
+  }
+
+  function refreshMappingUI(){
+    const container = $('#mapContainer');
+    const need = ['stockout','contratos','auxiliar','expurgo'].filter(k=>state.files[k]);
+    if(!need.length){ $('#secMapping').style.display='none'; return; }
+    $('#secMapping').style.display='block';
+    container.innerHTML='';
+    need.forEach(key=>{
+      const spec = FIELD_SPECS[key];
+      const headers = state.files[key].headers;
+      if(!state.mapping[key]) state.mapping[key]={};
+      const table = document.createElement('table');
+      table.className='ica-map-table';
+      table.innerHTML = `<tr><th colspan="2">${spec.label}</th></tr>`;
+      Object.entries(spec.fields).forEach(([fieldKey,fieldSpec])=>{
+        if(!state.mapping[key][fieldKey]){
+          state.mapping[key][fieldKey] = guessColumn(headers, fieldSpec.kw);
+        }
+        const tr = document.createElement('tr');
+        const optional = fieldKey==='deposito' ? ' (opcional)':'';
+        tr.innerHTML = `<td style="width:180px;color:var(--text-dim);">${fieldSpec.label}${optional}</td><td></td>`;
+        const select = document.createElement('select');
+        const noneOpt = fieldKey==='deposito' ? '<option value="">— nenhuma —</option>' : '';
+        select.innerHTML = noneOpt + headers.map(h=>`<option value="${h}" ${h===state.mapping[key][fieldKey]?'selected':''}>${h}</option>`).join('');
+        select.addEventListener('change',()=>{ state.mapping[key][fieldKey]=select.value; });
+        tr.children[1].appendChild(select);
+        table.appendChild(tr);
+      });
+      container.appendChild(table);
+    });
+
+    // deposito availability toggle
+    const depWrap = $('#depositoToggleWrap');
+    if(state.files.stockout && state.files.contratos){
+      depWrap.style.display='flex';
+    } else {
+      depWrap.style.display='none';
+    }
+
+    refreshEmpresaMapping();
+  }
+
+  function refreshEmpresaMapping(){
+    const wrap = $('#empresaMapContainer');
+    wrap.innerHTML='';
+    if(!(state.files.stockout && state.files.contratos)) return;
+    const sMap = state.mapping.stockout, cMap = state.mapping.contratos;
+    if(!sMap.empresa || !cMap.codEmpresa) return;
+
+    const codEmpresaOptions = [...new Set(state.files.contratos.rows.map(r=>r[cMap.codEmpresa]).filter(v=>v!=null && v!==''))]
+      .map(v=>{
+        let nome = '';
+        if(cMap.nomeEmpresa){
+          const row = state.files.contratos.rows.find(r=>String(r[cMap.codEmpresa])===String(v));
+          if(row) nome = row[cMap.nomeEmpresa];
+        }
+        return {v, label: nome ? `${v} — ${nome}` : String(v)};
+      }).sort((a,b)=>String(a.v).localeCompare(String(b.v)));
+
+    const combos = new Map(); // sigla|deposito -> {sigla, deposito}
+    state.files.stockout.rows.forEach(r=>{
+      const sigla = r[sMap.empresa];
+      if(sigla==null || sigla==='') return;
+      const dep = sMap.deposito ? r[sMap.deposito] : '';
+      const key = normKey(sigla)+'|'+normKey(dep);
+      if(!combos.has(key)) combos.set(key,{sigla, deposito: state.useDeposito ? dep : ''});
+    });
+    // if not using depósito granularity, collapse to sigla only
+    let rows = [...combos.values()];
+    if(!state.useDeposito){
+      const bySigla = new Map();
+      rows.forEach(r=>{ if(!bySigla.has(normKey(r.sigla))) bySigla.set(normKey(r.sigla), {sigla:r.sigla, deposito:''}); });
+      rows = [...bySigla.values()];
+    }
+    rows.sort((a,b)=> String(a.sigla).localeCompare(String(b.sigla)) || String(a.deposito).localeCompare(String(b.deposito)));
+
+    const title = document.createElement('div');
+    title.innerHTML = `<div style="font-family:var(--font-mono);font-size:10.5px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;">Sigla${state.useDeposito?' + Depósito':''} (Stockout) &rarr; cod_empresa (Contratos)</div>`;
+    wrap.appendChild(title);
+
+    const table = document.createElement('table');
+    table.className='ica-map-table';
+    table.innerHTML = `<tr><th>Sigla</th>${state.useDeposito?'<th>Depósito</th>':''}<th>cod_empresa correspondente</th></tr>`;
+    rows.forEach(r=>{
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td style="font-family:var(--font-mono);">${r.sigla}</td>${state.useDeposito?`<td style="font-family:var(--font-mono);">${r.deposito??''}</td>`:''}<td></td>`;
+      const select = document.createElement('select');
+      const auto = resolveCodEmpresa(r.sigla, r.deposito) || '';
+      select.innerHTML = '<option value="">— selecione —</option>' + codEmpresaOptions.map(o=>`<option value="${o.v}" ${String(o.v)===String(auto)?'selected':''}>${o.label}</option>`).join('');
+      select.addEventListener('change',()=>{
+        const existing = state.empresaMap.find(m=>normKey(m.sigla)===normKey(r.sigla) && normKey(m.deposito)===normKey(r.deposito));
+        if(existing) existing.codEmpresa = select.value;
+        else state.empresaMap.push({sigla:r.sigla, deposito:r.deposito||'', codEmpresa:select.value});
+        checkReady();
+      });
+      tr.lastElementChild.appendChild(select);
+      table.appendChild(tr);
+    });
+    wrap.appendChild(table);
+    checkReady();
+  }
+
+  function checkReady(){
+    const ready = state.files.stockout && state.files.contratos &&
+      state.mapping.stockout && state.mapping.stockout.empresa && state.mapping.stockout.codigo &&
+      state.mapping.contratos && state.mapping.contratos.codEmpresa && state.mapping.contratos.codigo;
+    $('#btnApurar').disabled = !ready;
+  }
+
+  // ---------- STORAGE ----------
+  async function saveStore(key, value, shared){
+    try{ await window.storage.set(key, JSON.stringify(value), !!shared); }catch(e){ console.error('storage set fail', e); }
+  }
+  async function loadStore(key, shared){
+    try{
+      const r = await window.storage.get(key, !!shared);
+      return r ? JSON.parse(r.value) : null;
+    }catch(e){ return null; }
+  }
+
+  async function initFromStorage(){
+    const aux = await loadStore('auxiliar-file', false);
+    if(aux){
+      state.files.auxiliar = aux;
+      const wrap = $('#up-auxiliar');
+      markLoaded(wrap, true);
+      $('.st',wrap).textContent = `salvo anteriormente · ${aux.rows.length.toLocaleString('pt-BR')} linhas`;
+      log('✓ Auxiliar recuperado do último uso.');
+    }
+    const exp = await loadStore('expurgo-file', false);
+    if(exp){
+      state.files.expurgo = exp;
+      const wrap = $('#up-expurgo');
+      markLoaded(wrap, true);
+      $('.st',wrap).textContent = `salvo anteriormente · ${exp.rows.length.toLocaleString('pt-BR')} linhas`;
+      log('✓ Expurgo recuperado do último uso.');
+    }
+    const emap = await loadStore('empresa-map-v2', false);
+    if(Array.isArray(emap) && emap.length) state.empresaMap = emap;
+    const useDep = await loadStore('use-deposito', false);
+    if(useDep!=null) { state.useDeposito = useDep; $('#useDeposito').checked = useDep; }
+    refreshMappingUI();
+    checkReady();
+    await renderTrend();
+
+    const index = await loadStore('snapshot-index', false) || [];
+    if(index.length){
+      setFlowCollapsed(true);
+    }
+  }
+
+  function setFlowCollapsed(collapsed){
+    $('#apuracaoFlow').style.display = collapsed ? 'none' : 'block';
+    $('#toggleFlowWrap').style.display = collapsed ? 'flex' : 'none';
+  }
+
+  $('#btnToggleFlow').addEventListener('click', ()=> setFlowCollapsed(false));
+
+  // ---------- PROCESSING ----------
+  function normKey(v){
+    return String(v==null?'':v).trim().toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+  }
+
+  function buildLookup(rows, empresaField, codigoField, depositoField, useDeposito, empresaTranslate){
+    const map = new Set();
+    rows.forEach(r=>{
+      let emp = r[empresaField];
+      if(empresaTranslate) emp = empresaTranslate(emp);
+      const cod = r[codigoField];
+      if(emp==null || cod==null) return;
+      let key = normKey(emp)+'|'+normKey(cod);
+      if(useDeposito && depositoField){
+        key += '|'+normKey(r[depositoField]);
+      }
+      map.add(key);
+    });
+    return map;
+  }
+
+  function runApuracao(){
+    const sMap = state.mapping.stockout;
+    const cMap = state.mapping.contratos;
+    const aMap = state.mapping.auxiliar;
+    const eMap = state.mapping.expurgo;
+    state.useDeposito = $('#useDeposito').checked;
+
+    const useDepFinal = state.useDeposito && sMap.deposito && cMap.deposito;
+
+    const contratoLookup = buildLookup(
+      state.files.contratos.rows, cMap.codEmpresa, cMap.codigo, cMap.deposito, useDepFinal, null
+    );
+
+    let expurgoLookup = null;
+    if(state.files.expurgo && eMap && eMap.codigo){
+      expurgoLookup = new Set();
+      state.files.expurgo.rows.forEach(r=>{
+        const resp = eMap.resposta ? String(r[eMap.resposta]||'') : 'Expurgar';
+        if(!normHeader(resp).includes('expurg')) return;
+        const cod = r[eMap.codigo];
+        if(cod==null) return;
+        expurgoLookup.add(normKey(cod));
+      });
+    }
+
+    let categoriaLookup = null;
+    if(state.files.auxiliar && aMap && aMap.classe && aMap.categoria){
+      categoriaLookup = new Map();
+      state.files.auxiliar.rows.forEach(r=>{
+        const c = r[aMap.classe];
+        if(c==null) return;
+        categoriaLookup.set(normKey(c), r[aMap.categoria]);
+      });
+    }
+
+    const items = [];
+    let noEmpresaMapCount = 0;
+
+    state.files.stockout.rows.forEach(r=>{
+      const empresaRaw = r[sMap.empresa];
+      const codigo = r[sMap.codigo];
+      const deposito = sMap.deposito ? r[sMap.deposito] : null;
+      const classe = sMap.classe ? r[sMap.classe] : null;
+      const valorUnit = Number(sMap.valorUnit ? r[sMap.valorUnit] : 0) || 0;
+      const cmm12 = Number(sMap.cmm12 ? r[sMap.cmm12] : 0) || 0;
+      const descricao = sMap.descricao ? r[sMap.descricao] : '';
+
+      const codEmpresaResolved = resolveCodEmpresa(empresaRaw, useDepFinal ? deposito : '');
+      if(!codEmpresaResolved) noEmpresaMapCount++;
+
+      let key = normKey(codEmpresaResolved)+'|'+normKey(codigo);
+      if(useDepFinal) key += '|'+normKey(deposito);
+
+      let expurgado = false;
+      if(expurgoLookup){
+        expurgado = expurgoLookup.has(normKey(codigo));
+      }
+
+      const temContrato = expurgado ? true : contratoLookup.has(key);
+      const consumo = valorUnit * cmm12;
+      const disponibilidade = temContrato ? consumo : 0;
+      const categoria = categoriaLookup ? (categoriaLookup.get(normKey(classe)) || 'Sem categoria') : 'Sem categoria';
+
+      items.push({
+        empresa: empresaRaw, deposito, classe, codigo, descricao,
+        valorUnit, cmm12, consumo, disponibilidade,
+        contrato: temContrato ? 'Sim':'Não', expurgado, categoria
+      });
+    });
+
+    if(noEmpresaMapCount>0){
+      log(`⚠ ${noEmpresaMapCount} linha(s) do Stockout sem correspondência de Empresa mapeada — tratadas como sem contrato.`);
+    }
+
+    state.computed = { items, generatedAt: new Date() };
+    saveStore('empresa-map-v2', state.empresaMap, false);
+    saveStore('use-deposito', state.useDeposito, false);
+    renderResults();
+  }
+
+  function fmtBRL(v){
+    return (v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL',maximumFractionDigits:0});
+  }
+  function fmtPct(v){
+    return (v*100).toLocaleString('pt-BR',{maximumFractionDigits:1})+'%';
+  }
+
+  function aggregate(items, keyFn){
+    const map = new Map();
+    items.forEach(it=>{
+      const k = keyFn(it) || '—';
+      if(!map.has(k)) map.set(k,{consumo:0,disponibilidade:0,total:0,semContrato:0});
+      const g = map.get(k);
+      g.consumo += it.consumo;
+      g.disponibilidade += it.disponibilidade;
+      g.total += 1;
+      if(it.contrato==='Não') g.semContrato += 1;
+    });
+    return map;
+  }
+
+  function renderBars(container, map){
+    const rows = [...map.entries()].map(([name,g])=>({
+      name, pctIndisp: g.consumo>0 ? 1-(g.disponibilidade/g.consumo) : 0,
+      valorIndisp: g.consumo - g.disponibilidade, ...g
+    })).sort((a,b)=>b.pctIndisp-a.pctIndisp);
+    container.innerHTML = rows.map(r=>`
+      <div class="ica-bar-row">
+        <div class="name" title="${r.name}">${r.name}</div>
+        <div class="ica-bar-track"><div class="ica-bar-fill" style="width:${Math.max(2,(1-r.pctIndisp)*100)}%;"></div></div>
+        <div class="ica-bar-pct">${fmtPct(r.pctIndisp)}</div>
+        <div class="ica-bar-pct" style="color:var(--coral);width:100px;">${fmtBRL(r.valorIndisp)}</div>
+      </div>
+    `).join('') || '<div class="ica-empty">Sem dados</div>';
+  }
+
+  function renderResults(){
+    const items = state.computed.items;
+    const monthVal = $('#icaMonth').value;
+    $('#resMonthLabel').textContent = monthVal || 'sem competência definida';
+
+    const totalConsumo = items.reduce((s,i)=>s+i.consumo,0);
+    const totalDisp = items.reduce((s,i)=>s+i.disponibilidade,0);
+    const totalItens = items.length;
+    const itensSemContrato = items.filter(i=>i.contrato==='Não').length;
+    const pctIndispValor = totalConsumo>0 ? 1-(totalDisp/totalConsumo) : 0;
+    const pctIndispItens = totalItens>0 ? itensSemContrato/totalItens : 0;
+    const expurgadosItems = items.filter(i=>i.expurgado);
+    const expurgados = expurgadosItems.length;
+    const valorExpurgo = expurgadosItems.reduce((s,i)=>s+i.consumo,0);
+    const classesExpurgo = [...new Set(expurgadosItems.map(i=>i.classe).filter(c=>c!=null && c!==''))].sort((a,b)=>String(a).localeCompare(String(b)));
+    const classesLabel = classesExpurgo.length
+      ? (classesExpurgo.length<=8 ? classesExpurgo.join(', ') : classesExpurgo.slice(0,8).join(', ')+` +${classesExpurgo.length-8}`)
+      : '—';
+
+    const withinTarget = pctIndispValor <= META_INDISP;
+    $('#kpiGrid').innerHTML = `
+      <div class="ica-kpi"><div class="lbl">Consumo (meta) total</div><div class="val">${fmtBRL(totalConsumo)}</div><div class="sub">CMM12 × Valor Unitário</div></div>
+      <div class="ica-kpi ok"><div class="lbl">Disponibilidade em contrato</div><div class="val">${fmtBRL(totalDisp)}</div><div class="sub">${fmtPct(1-pctIndispValor)} do total</div></div>
+      <div class="ica-kpi ${withinTarget?'ok':'warn'}"><div class="lbl">Indisponibilidade (R$) &middot; meta ≤ 3%</div><div class="val">${fmtPct(pctIndispValor)}</div><div class="sub">${fmtBRL(totalConsumo-totalDisp)} · ${withinTarget?'dentro da meta':'acima da meta'}</div></div>
+      <div class="ica-kpi warn"><div class="lbl">Indisponibilidade (itens)</div><div class="val">${fmtPct(pctIndispItens)}</div><div class="sub">${itensSemContrato.toLocaleString('pt-BR')} de ${totalItens.toLocaleString('pt-BR')} itens</div></div>
+      <div class="ica-kpi"><div class="lbl">Itens expurgados</div><div class="val">${expurgados.toLocaleString('pt-BR')}</div><div class="sub">${fmtBRL(valorExpurgo)} tratados como disponíveis · Classes: ${classesLabel}</div></div>
+    `;
+
+    renderBars($('#catBars'), aggregate(items, i=>i.categoria));
+    renderBars($('#empBars'), aggregate(items, i=>i.empresa));
+
+    const top = items.filter(i=>i.contrato==='Não').sort((a,b)=>b.consumo-a.consumo).slice(0,50);
+    const tbl = $('#topItemsTable');
+    tbl.innerHTML = `
+      <tr><th>Empresa</th><th>Depósito</th><th>Código</th><th>Descrição</th><th>Categoria</th><th>Consumo (meta)</th></tr>
+      ${top.map(i=>`<tr><td>${i.empresa??''}</td><td>${i.deposito??''}</td><td>${i.codigo??''}</td><td style="font-family:var(--font-body);">${(i.descricao||'').toString().slice(0,60)}</td><td>${i.categoria}</td><td>${fmtBRL(i.consumo)}</td></tr>`).join('')}
+    `;
+    if(!top.length) tbl.innerHTML += '<tr><td colspan="6" style="text-align:center;color:var(--text-dim);">Nenhum item sem contrato 🎉</td></tr>';
+
+    $('#results').style.display='block';
+    $('#results').scrollIntoView({behavior:'smooth', block:'nearest'});
+  }
+
+  // ---------- HISTORY / TREND ----------
+  async function saveSnapshot(){
+    const month = $('#icaMonth').value;
+    if(!month){ toast('Defina a competência antes de salvar.'); return; }
+    if(!state.computed){ toast('Rode a apuração antes de salvar.'); return; }
+    const items = state.computed.items;
+    const totalConsumo = items.reduce((s,i)=>s+i.consumo,0);
+    const totalDisp = items.reduce((s,i)=>s+i.disponibilidade,0);
+    const totalItens = items.length;
+    const itensSemContrato = items.filter(i=>i.contrato==='Não').length;
+    const byCategoria = {};
+    aggregate(items, i=>i.categoria).forEach((g,k)=>{ byCategoria[k]={consumo:g.consumo,disponibilidade:g.disponibilidade}; });
+    const byEmpresa = {};
+    aggregate(items, i=>i.empresa).forEach((g,k)=>{ byEmpresa[k]={consumo:g.consumo,disponibilidade:g.disponibilidade}; });
+
+    const snapshot = { month, totalConsumo, totalDisp, totalItens, itensSemContrato, byCategoria, byEmpresa, savedAt: new Date().toISOString() };
+    await saveStore('snapshot:'+month, snapshot, false);
+
+    let index = await loadStore('snapshot-index', false) || [];
+    if(!index.includes(month)){ index.push(month); index.sort(); await saveStore('snapshot-index', index, false); }
+
+    toast(`Competência ${month} salva no histórico.`);
+    renderTrend();
+  }
+
+  function fmtMonthLabel(m){
+    const meses = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+    const [y,mm] = m.split('-');
+    return meses[parseInt(mm,10)-1] + '/' + y.slice(2);
+  }
+
+  function pctCellClass(v){
+    if(v==null) return 'p-empty';
+    if(v<=META_INDISP) return 'p-ok';
+    if(v<=META_INDISP*3) return 'p-warn';
+    return 'p-bad';
+  }
+
+  function renderAcumTable(container, snaps, groupField){
+    const months = snaps.slice(-12);
+    if(!months.length){ container.innerHTML=''; return; }
+
+    const groupNames = new Set();
+    months.forEach(s=> Object.keys(s[groupField]||{}).forEach(k=>groupNames.add(k)));
+    const names = [...groupNames].sort();
+
+    const head = `<tr><th class="ica-rowname" style="position:sticky;left:0;">${groupField==='byCategoria'?'Categoria':'Empresa'}</th>` +
+      months.map(s=>`<th style="text-align:right;">${fmtMonthLabel(s.month)}</th>`).join('') +
+      `<th style="text-align:right;">Acumulado</th></tr>`;
+
+    const bodyRows = names.map(name=>{
+      let accConsumo=0, accDisp=0;
+      const cells = months.map(s=>{
+        const g = (s[groupField]||{})[name];
+        if(!g || g.consumo<=0){ return `<td class="ica-pctcell p-empty">—</td>`; }
+        accConsumo += g.consumo; accDisp += g.disponibilidade;
+        const pct = 1-(g.disponibilidade/g.consumo);
+        return `<td class="ica-pctcell ${pctCellClass(pct)}">${fmtPct(pct)}</td>`;
+      }).join('');
+      const accPct = accConsumo>0 ? 1-(accDisp/accConsumo) : null;
+      return `<tr><td class="ica-rowname">${name}</td>${cells}<td class="ica-pctcell ${pctCellClass(accPct)}" style="font-weight:600;">${accPct==null?'—':fmtPct(accPct)}</td></tr>`;
+    });
+
+    let totConsumo=0, totDisp=0;
+    const totCells = months.map(s=>{
+      totConsumo += s.totalConsumo; totDisp += s.totalDisp;
+      const pct = s.totalConsumo>0 ? 1-(s.totalDisp/s.totalConsumo) : null;
+      return `<td class="ica-pctcell ${pctCellClass(pct)}">${pct==null?'—':fmtPct(pct)}</td>`;
+    }).join('');
+    const totAccPct = totConsumo>0 ? 1-(totDisp/totConsumo) : null;
+    const totalRow = `<tr class="ica-total-row"><td class="ica-rowname">Total Geral</td>${totCells}<td class="ica-pctcell ${pctCellClass(totAccPct)}">${totAccPct==null?'—':fmtPct(totAccPct)}</td></tr>`;
+
+    container.innerHTML = head + bodyRows.join('') + totalRow;
+  }
+
+  async function loadAllSnapshots(){
+    const index = await loadStore('snapshot-index', false) || [];
+    const snaps = [];
+    for(const m of index){
+      const s = await loadStore('snapshot:'+m, false);
+      if(s) snaps.push(s);
+    }
+    snaps.sort((a,b)=>a.month.localeCompare(b.month));
+    return snaps;
+  }
+
+  async function renderAcumuladoTables(){
+    const snaps = await loadAllSnapshots();
+    if(snaps.length<2){ $('#acumSection').style.display='none'; return; }
+    $('#acumSection').style.display='block';
+    renderAcumTable($('#acumCatTable'), snaps, 'byCategoria');
+    renderAcumTable($('#acumEmpTable'), snaps, 'byEmpresa');
+  }
+
+  async function renderTrend(){
+    renderAcumuladoTables();
+    const index = await loadStore('snapshot-index', false) || [];
+    if(!index.length){ $('#trendSection').style.display='none'; return; }
+    const snaps = [];
+    for(const m of index){
+      const s = await loadStore('snapshot:'+m, false);
+      if(s) snaps.push(s);
+    }
+    snaps.sort((a,b)=>a.month.localeCompare(b.month));
+    if(!snaps.length){ $('#trendSection').style.display='none'; return; }
+    $('#trendSection').style.display='block';
+
+    const w = 900, h = 170, pad = 30;
+    const vals = snaps.map(s=> s.totalConsumo>0 ? 1-(s.totalDisp/s.totalConsumo) : 0);
+    const maxV = Math.max(0.1, META_INDISP*1.3, ...vals);
+    const stepX = (w-pad*2)/Math.max(1,snaps.length-1);
+    const pts = vals.map((v,idx)=>{
+      const x = pad + idx*stepX;
+      const y = h-pad - (v/maxV)*(h-pad*2);
+      return [x,y];
+    });
+    const path = pts.map((p,i)=> (i===0?'M':'L')+p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ');
+    const dotColor = (v)=> v<=META_INDISP ? 'var(--teal)':'var(--coral)';
+    const circles = pts.map((p,i)=>`<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="3.5" fill="${dotColor(vals[i])}"></circle>`).join('');
+    const labels = snaps.map((s,i)=>`<text x="${pts[i][0].toFixed(1)}" y="${h-8}" font-family="var(--font-mono)" font-size="9.5" fill="var(--text-dim)" text-anchor="middle">${s.month}</text>`).join('');
+    const valLabels = snaps.map((s,i)=>`<text x="${pts[i][0].toFixed(1)}" y="${(pts[i][1]-10).toFixed(1)}" font-family="var(--font-mono)" font-size="10" fill="var(--text)" text-anchor="middle">${fmtPct(vals[i])}</text>`).join('');
+    const metaY = h-pad - (META_INDISP/maxV)*(h-pad*2);
+    const metaLine = `<line x1="${pad}" y1="${metaY.toFixed(1)}" x2="${w-pad}" y2="${metaY.toFixed(1)}" stroke="var(--amber)" stroke-width="1.2" stroke-dasharray="4 4"></line>
+      <text x="${w-pad}" y="${(metaY-6).toFixed(1)}" font-family="var(--font-mono)" font-size="9.5" fill="var(--amber)" text-anchor="end">meta 3%</text>`;
+
+    $('#trendChart').innerHTML = `
+      <svg viewBox="0 0 ${w} ${h}" style="width:100%;height:auto;">
+        ${metaLine}
+        <path d="${path}" fill="none" stroke="var(--teal)" stroke-width="2"></path>
+        ${circles}${labels}${valLabels}
+      </svg>
+    `;
+
+    const listEl = $('#snapshotList');
+    listEl.innerHTML = `<div style="font-family:var(--font-mono);font-size:10.5px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;">Competências salvas</div>` +
+      snaps.slice().reverse().map((s,i)=>{
+        const v = vals[vals.length-1-i];
+        return `<div class="ica-snap-row">
+          <span class="m">${s.month}</span>
+          <span class="v">${fmtPct(v)} · ${s.itensSemContrato}/${s.totalItens} itens sem contrato</span>
+          <button class="ica-snap-del" data-month="${s.month}">excluir</button>
+        </div>`;
+      }).join('');
+    $all('.ica-snap-del', listEl).forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        armConfirm(btn, 'excluir', 'confirmar exclusão?', ()=>deleteSnapshot(btn.dataset.month));
+      });
+    });
+  }
+
+  async function deleteSnapshot(month){
+    await window.storage.delete('snapshot:'+month, false).catch(()=>{});
+    let index = await loadStore('snapshot-index', false) || [];
+    index = index.filter(m=>m!==month);
+    await saveStore('snapshot-index', index, false);
+    toast(`Competência ${month} removida do histórico.`);
+    renderTrend();
+  }
+
+  // ---------- EXPORT ----------
+  function exportExcel(){
+    if(!state.computed){ toast('Rode a apuração primeiro.'); return; }
+    const items = state.computed.items;
+    const month = $('#icaMonth').value || '';
+
+    const wb = XLSX.utils.book_new();
+
+    const detalheData = items.map(i=>({
+      Empresa:i.empresa, 'Depósito':i.deposito, Classe:i.classe, 'Código Material':i.codigo,
+      'Descrição':i.descricao, 'Valor Unitário':i.valorUnit, CMM12:i.cmm12,
+      'Consumo (meta)':i.consumo, Contrato:i.contrato, Expurgado:i.expurgado?'Sim':'Não',
+      Disponibilidade:i.disponibilidade, Categoria:i.categoria
+    }));
+    const wsDet = XLSX.utils.json_to_sheet(detalheData);
+    XLSX.utils.book_append_sheet(wb, wsDet, 'Gestão de Materiais');
+
+    const catMap = aggregate(items, i=>i.categoria);
+    const resumoCat = [...catMap.entries()].map(([nome,g])=>({
+      Categoria:nome, 'Consumo (meta)':g.consumo, Disponibilidade:g.disponibilidade,
+      '% Indisponibilidade':g.consumo>0?(1-g.disponibilidade/g.consumo):0,
+      'Itens totais':g.total, 'Itens sem contrato':g.semContrato
+    }));
+    const empMap = aggregate(items, i=>i.empresa);
+    const resumoEmp = [...empMap.entries()].map(([nome,g])=>({
+      Empresa:nome, 'Consumo (meta)':g.consumo, Disponibilidade:g.disponibilidade,
+      '% Indisponibilidade':g.consumo>0?(1-g.disponibilidade/g.consumo):0,
+      'Itens totais':g.total, 'Itens sem contrato':g.semContrato
+    }));
+    const wsResumo = XLSX.utils.json_to_sheet([{Competência:month},{},...resumoCat.map(r=>({...r,__grp:'Categoria'}))]);
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(resumoCat), 'Resumo Categoria');
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(resumoEmp), 'Resumo Empresa');
+
+    (async ()=>{
+      const index = await loadStore('snapshot-index', false) || [];
+      if(index.length){
+        const rows=[];
+        for(const m of index){
+          const s = await loadStore('snapshot:'+m, false);
+          if(s) rows.push({
+            Competência:s.month, 'Consumo Total':s.totalConsumo, 'Disponibilidade Total':s.totalDisp,
+            '% Indisponibilidade': s.totalConsumo>0?(1-s.totalDisp/s.totalConsumo):0,
+            'Itens Totais':s.totalItens, 'Itens Sem Contrato':s.itensSemContrato
+          });
+        }
+        rows.sort((a,b)=>a['Competência'].localeCompare(b['Competência']));
+        if(rows.length) XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(rows), 'Histórico');
+      }
+      XLSX.writeFile(wb, `Indisponibilidade_Contratos_${month||'apuracao'}.xlsx`);
+    })();
+  }
+
+  function resetForNewMonth(){
+    delete state.files.stockout;
+    delete state.files.contratos;
+    delete state.mapping.stockout;
+    delete state.mapping.contratos;
+    state.computed = null;
+
+    ['stockout','contratos'].forEach(k=>{
+      const wrap = $('#up-'+k);
+      markLoaded(wrap, false);
+      $('.lbl',wrap).textContent = FIELD_SPECS[k].label;
+      $('.st',wrap).innerHTML = 'Nenhum arquivo <span class="req">&middot; obrigat&oacute;rio</span>';
+      const inp = $('input',wrap); if(inp) inp.value='';
+    });
+
+    $('#icaLog').textContent = '';
+    $('#results').style.display='none';
+    refreshMappingUI();
+    checkReady();
+
+    const cur = $('#icaMonth').value;
+    if(cur){
+      const [y,m] = cur.split('-').map(Number);
+      const d = new Date(y, m, 1);
+      $('#icaMonth').value = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+    }
+    toast('Pronto para a apuração do próximo mês.');
+  }
+
+  function armConfirm(btn, label, confirmLabel, onConfirmed){
+    if(btn.dataset.armed==='1'){
+      clearTimeout(btn._armTimer);
+      btn.dataset.armed='0';
+      btn.textContent = label;
+      onConfirmed();
+      return;
+    }
+    btn.dataset.armed='1';
+    btn.textContent = confirmLabel;
+    btn._armTimer = setTimeout(()=>{
+      btn.dataset.armed='0';
+      btn.textContent = label;
+    }, 4000);
+  }
+
+  function toast(msg){
+    const t = $('#icaToast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(()=>t.classList.remove('show'), 2600);
+  }
+
+  // ---------- WIRE UP ----------
+  $all('.ica-upload input[type=file]').forEach(inp=>{
+    inp.addEventListener('change', ()=>handleFileInput(inp));
+  });
+  $('#useDeposito').addEventListener('change', ()=>{
+    state.useDeposito = $('#useDeposito').checked;
+    refreshEmpresaMapping();
+  });
+  $('#btnApurar').addEventListener('click', runApuracao);
+  $('#btnSaveSnapshot').addEventListener('click', saveSnapshot);
+  $('#btnExport').addEventListener('click', exportExcel);
+  $('#btnResetMonth').addEventListener('click', resetForNewMonth);
+  $('#btnClearStorage').addEventListener('click', ()=>{
+    const btn = $('#btnClearStorage');
+    armConfirm(btn, 'Limpar dados salvos', 'confirmar limpeza?', async ()=>{
+      await window.storage.delete('auxiliar-file', false).catch(()=>{});
+      await window.storage.delete('expurgo-file', false).catch(()=>{});
+      await window.storage.delete('empresa-map-v2', false).catch(()=>{});
+      location.reload();
+    });
+  });
+
+  const now = new Date();
+  $('#icaMonth').value = now.toISOString().slice(0,7);
+
+  initFromStorage();
+})();
+</script>
