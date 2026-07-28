@@ -137,6 +137,16 @@
     border:1px solid var(--coral-dim);border-radius:6px;padding:3px 9px;cursor:pointer;
   }
   .ica-snap-del:hover{background:var(--coral-dim);}
+  .ica-bar-clickable{cursor:pointer;border-radius:6px;padding-left:6px;padding-right:6px;margin:0 -6px;transition:background .12s;}
+  .ica-bar-clickable:hover{background:rgba(232,163,61,.08);}
+  .ica-bar-clickable.active{background:rgba(232,163,61,.14);}
+  .ica-bar-clickable.active .name{color:var(--amber);font-weight:600;}
+  .ica-filter-chip{
+    font-family:var(--font-mono);font-size:11px;background:var(--amber-dim);color:var(--amber);
+    border:1px solid var(--amber);border-radius:20px;padding:3px 10px;cursor:pointer;
+    vertical-align:middle;margin-left:6px;
+  }
+  .ica-filter-chip:hover{background:var(--amber);color:#1B1305;}
   .ica-pctcell{font-family:var(--font-mono);text-align:right;white-space:nowrap;}
   .ica-pctcell.p-ok{color:var(--teal);}
   .ica-pctcell.p-warn{color:var(--amber);}
@@ -207,6 +217,42 @@
 
   <!-- HISTORY (always visible when there's saved data) -->
   <div id="historyView">
+    <div id="results" style="display:none;">
+      <div class="ica-section">
+        <h2><span class="n">3</span>Resultado &mdash; <select id="resultMonthSelect" class="ica-month" style="font-size:13px;padding:5px 8px;"></select> <button class="ica-filter-chip" id="filterChip" style="display:none;" type="button"></button></h2>
+        <p class="hint" style="margin-left:28px;">Clique numa Categoria ou Empresa nos gr&aacute;ficos abaixo para filtrar o resultado.</p>
+        <div class="ica-kpis" id="kpiGrid"></div>
+      </div>
+
+      <div class="ica-flex-cols">
+        <div class="ica-section" style="margin-left:0;">
+          <h2 style="margin-left:0;">Indisponibilidade por Categoria</h2>
+          <div id="catBars"></div>
+        </div>
+        <div class="ica-section" style="margin-left:0;">
+          <h2 style="margin-left:0;">Indisponibilidade por Empresa</h2>
+          <div id="empBars"></div>
+        </div>
+      </div>
+
+      <div class="ica-section">
+        <h2>Itens sem contrato &mdash; maiores valores</h2>
+        <div class="ica-scroll">
+          <table class="ica-table" id="topItemsTable"></table>
+        </div>
+      </div>
+
+      <div class="ica-actions" style="margin-left:0;" id="liveActionsWrap">
+        <button class="ica-btn" id="btnSaveSnapshot">Salvar competência no histórico</button>
+        <button class="ica-btn secondary" id="btnExport">Baixar Excel da apuração</button>
+        <button class="ica-btn secondary" id="btnResetMonth">Iniciar apuração do próximo mês</button>
+      </div>
+      <div class="ica-actions" style="margin-left:0;display:none;" id="savedActionsWrap">
+        <button class="ica-btn secondary" id="btnExportSaved">Baixar Excel desta competência</button>
+        <span class="hint" style="margin:0;">Vendo uma competência já salva &mdash; use "+ Nova apura&ccedil;&atilde;o mensal" no topo para apurar outro m&ecirc;s.</span>
+      </div>
+    </div>
+
     <div class="ica-section" id="trendSection" style="display:none;">
       <h2>Hist&oacute;rico de % Indisponibilidade (valor)</h2>
       <div class="ica-trend-wrap" id="trendChart"></div>
@@ -267,6 +313,10 @@
         <input type="checkbox" id="useDeposito" checked>
         <label for="useDeposito">Validar tamb&eacute;m por Dep&oacute;sito no cruzamento de contrato (al&eacute;m de Empresa + C&oacute;digo Material)</label>
       </div>
+      <div class="ica-checkbox-row" id="expurgoModeWrap" style="margin-left:28px;display:none;">
+        <input type="checkbox" id="useEmpresaExpurgo">
+        <label for="useEmpresaExpurgo">Expurgar apenas na Empresa indicada na planilha de Expurgo (em vez de em todas as empresas pelo mesmo C&oacute;digo Material)</label>
+      </div>
 
       <div class="ica-map-wrap show" id="empresaMapContainer" style="margin-top:18px;"></div>
     </div>
@@ -275,38 +325,6 @@
     <div class="ica-actions">
       <button class="ica-btn" id="btnApurar" disabled>Apurar indicador</button>
       <button class="ica-btn secondary" id="btnClearStorage">Limpar dados salvos</button>
-    </div>
-  </div>
-
-  <!-- RESULTS -->
-  <div id="results" style="display:none;">
-    <div class="ica-section">
-      <h2><span class="n">3</span>Resultado &mdash; <span id="resMonthLabel"></span></h2>
-      <div class="ica-kpis" id="kpiGrid"></div>
-    </div>
-
-    <div class="ica-flex-cols">
-      <div class="ica-section" style="margin-left:0;">
-        <h2 style="margin-left:0;">Indisponibilidade por Categoria</h2>
-        <div id="catBars"></div>
-      </div>
-      <div class="ica-section" style="margin-left:0;">
-        <h2 style="margin-left:0;">Indisponibilidade por Empresa</h2>
-        <div id="empBars"></div>
-      </div>
-    </div>
-
-    <div class="ica-section">
-      <h2>Itens sem contrato &mdash; maiores valores</h2>
-      <div class="ica-scroll">
-        <table class="ica-table" id="topItemsTable"></table>
-      </div>
-    </div>
-
-    <div class="ica-actions" style="margin-left:0;">
-      <button class="ica-btn" id="btnSaveSnapshot">Salvar competência no histórico</button>
-      <button class="ica-btn secondary" id="btnExport">Baixar Excel da apuração</button>
-      <button class="ica-btn secondary" id="btnResetMonth">Iniciar apuração do próximo mês</button>
     </div>
   </div>
 
@@ -337,6 +355,11 @@
     mapping: {}, // fileKey -> {field: header}
     empresaMap: DEFAULT_EMPRESA_MAP.slice(), // array of {sigla, deposito, codEmpresa}
     useDeposito: true,
+    useEmpresaExpurgo: false,
+    activeFilter: null, // {type:'categoria'|'empresa', value:string}
+    viewItems: null,        // items array currently displayed in Resultado
+    viewMonthValue: null,   // 'YYYY-MM' or '__live__'
+    viewIsLive: false,
     computed: null
   };
 
@@ -382,6 +405,7 @@
       label:'Expurgo',
       fields: {
         codigo: {label:'Código Material', kw:['codigo material','código material','codmat']},
+        empresa: {label:'Empresa (opcional)', kw:['empresa']},
         resposta: {label:'Resposta/Status', kw:['resposta','status']}
       }
     }
@@ -472,7 +496,7 @@
         const optional = fieldKey==='deposito' ? ' (opcional)':'';
         tr.innerHTML = `<td style="width:180px;color:var(--text-dim);">${fieldSpec.label}${optional}</td><td></td>`;
         const select = document.createElement('select');
-        const noneOpt = fieldKey==='deposito' ? '<option value="">— nenhuma —</option>' : '';
+        const noneOpt = (fieldKey==='deposito' || (key==='expurgo' && fieldKey==='empresa')) ? '<option value="">— nenhuma —</option>' : '';
         select.innerHTML = noneOpt + headers.map(h=>`<option value="${h}" ${h===state.mapping[key][fieldKey]?'selected':''}>${h}</option>`).join('');
         select.addEventListener('change',()=>{ state.mapping[key][fieldKey]=select.value; });
         tr.children[1].appendChild(select);
@@ -487,6 +511,14 @@
       depWrap.style.display='flex';
     } else {
       depWrap.style.display='none';
+    }
+
+    // expurgo matching-mode toggle
+    const expModeWrap = $('#expurgoModeWrap');
+    if(state.files.expurgo && state.mapping.expurgo && state.mapping.expurgo.empresa){
+      expModeWrap.style.display='flex';
+    } else {
+      expModeWrap.style.display='none';
     }
 
     refreshEmpresaMapping();
@@ -591,6 +623,8 @@
     if(Array.isArray(emap) && emap.length) state.empresaMap = emap;
     const useDep = await loadStore('use-deposito', false);
     if(useDep!=null) { state.useDeposito = useDep; $('#useDeposito').checked = useDep; }
+    const useEmpExp = await loadStore('use-empresa-expurgo', false);
+    if(useEmpExp!=null) { state.useEmpresaExpurgo = useEmpExp; $('#useEmpresaExpurgo').checked = useEmpExp; }
     refreshMappingUI();
     checkReady();
     await renderTrend();
@@ -598,6 +632,9 @@
     const index = await loadStore('snapshot-index', false) || [];
     if(index.length){
       setFlowCollapsed(true);
+      await populateResultMonthSelect();
+      const mostRecent = index.slice().sort().reverse()[0];
+      await switchResultView(mostRecent);
     }
   }
 
@@ -635,8 +672,10 @@
     const aMap = state.mapping.auxiliar;
     const eMap = state.mapping.expurgo;
     state.useDeposito = $('#useDeposito').checked;
+    state.useEmpresaExpurgo = $('#useEmpresaExpurgo').checked;
 
     const useDepFinal = state.useDeposito && sMap.deposito && cMap.deposito;
+    const useEmpExpurgo = state.useEmpresaExpurgo && eMap && eMap.empresa;
 
     const contratoLookup = buildLookup(
       state.files.contratos.rows, cMap.codEmpresa, cMap.codigo, cMap.deposito, useDepFinal, null
@@ -650,7 +689,12 @@
         if(!normHeader(resp).includes('expurg')) return;
         const cod = r[eMap.codigo];
         if(cod==null) return;
-        expurgoLookup.add(normKey(cod));
+        if(useEmpExpurgo){
+          const emp = r[eMap.empresa];
+          expurgoLookup.add(normKey(emp)+'|'+normKey(cod));
+        } else {
+          expurgoLookup.add(normKey(cod));
+        }
       });
     }
 
@@ -684,7 +728,9 @@
 
       let expurgado = false;
       if(expurgoLookup){
-        expurgado = expurgoLookup.has(normKey(codigo));
+        expurgado = useEmpExpurgo
+          ? expurgoLookup.has(normKey(empresaRaw)+'|'+normKey(codigo))
+          : expurgoLookup.has(normKey(codigo));
       }
 
       const temContrato = expurgado ? true : contratoLookup.has(key);
@@ -704,9 +750,15 @@
     }
 
     state.computed = { items, generatedAt: new Date() };
+    state.activeFilter = null;
     saveStore('empresa-map-v2', state.empresaMap, false);
     saveStore('use-deposito', state.useDeposito, false);
-    renderResults();
+    saveStore('use-empresa-expurgo', state.useEmpresaExpurgo, false);
+    (async ()=>{
+      await populateResultMonthSelect();
+      await switchResultView('__live__');
+      $('#results').scrollIntoView({behavior:'smooth', block:'start'});
+    })();
   }
 
   function fmtBRL(v){
@@ -730,25 +782,93 @@
     return map;
   }
 
-  function renderBars(container, map){
+  function renderBars(container, map, filterType, activeValue){
     const rows = [...map.entries()].map(([name,g])=>({
       name, pctIndisp: g.consumo>0 ? 1-(g.disponibilidade/g.consumo) : 0,
       valorIndisp: g.consumo - g.disponibilidade, ...g
     })).sort((a,b)=>b.pctIndisp-a.pctIndisp);
-    container.innerHTML = rows.map(r=>`
-      <div class="ica-bar-row">
+    container.innerHTML = rows.map(r=>{
+      const active = activeValue!=null && r.name===activeValue;
+      return `
+      <div class="ica-bar-row ica-bar-clickable ${active?'active':''}" data-filter-type="${filterType}" data-filter-value="${r.name.replace(/"/g,'&quot;')}">
         <div class="name" title="${r.name}">${r.name}</div>
         <div class="ica-bar-track"><div class="ica-bar-fill" style="width:${Math.max(2,(1-r.pctIndisp)*100)}%;"></div></div>
         <div class="ica-bar-pct">${fmtPct(r.pctIndisp)}</div>
         <div class="ica-bar-pct" style="color:var(--coral);width:100px;">${fmtBRL(r.valorIndisp)}</div>
       </div>
-    `).join('') || '<div class="ica-empty">Sem dados</div>';
+    `;
+    }).join('') || '<div class="ica-empty">Sem dados</div>';
+
+    $all('.ica-bar-clickable', container).forEach(row=>{
+      row.addEventListener('click', ()=>{
+        const type = row.dataset.filterType, value = row.dataset.filterValue;
+        if(state.activeFilter && state.activeFilter.type===type && state.activeFilter.value===value){
+          state.activeFilter = null; // clicking the active row again clears the filter
+        } else {
+          state.activeFilter = {type, value};
+        }
+        renderResults();
+      });
+    });
+  }
+
+  function getFilteredItems(){
+    const all = state.viewItems || [];
+    if(!state.activeFilter) return all;
+    const {type, value} = state.activeFilter;
+    return all.filter(i => (type==='categoria' ? i.categoria : i.empresa) === value);
+  }
+
+  async function populateResultMonthSelect(){
+    const sel = $('#resultMonthSelect');
+    const index = await loadStore('snapshot-index', false) || [];
+    const monthsDesc = index.slice().sort().reverse();
+    const liveMonth = $('#icaMonth').value;
+
+    let opts = '';
+    if(state.computed && liveMonth){
+      const alreadySaved = monthsDesc.includes(liveMonth);
+      opts += `<option value="__live__">${fmtMonthLabel(liveMonth)}${alreadySaved?' (recém-apurada, ainda não salva de novo)':' (não salva)'}</option>`;
+    }
+    monthsDesc.forEach(m=>{ opts += `<option value="${m}">${fmtMonthLabel(m)}</option>`; });
+    sel.innerHTML = opts;
+
+    if(!opts){ $('#results').style.display='none'; }
+  }
+
+  async function switchResultView(value){
+    state.activeFilter = null;
+    if(value==='__live__'){
+      state.viewItems = state.computed ? state.computed.items : [];
+      state.viewMonthValue = '__live__';
+      state.viewIsLive = true;
+    } else {
+      let items = await loadStore('snapshot-items:'+value, false);
+      state.viewItems = items || [];
+      state.viewMonthValue = value;
+      state.viewIsLive = false;
+    }
+    const sel = $('#resultMonthSelect');
+    if(sel.value !== value) sel.value = value;
+    $('#liveActionsWrap').style.display = state.viewIsLive ? 'flex' : 'none';
+    $('#savedActionsWrap').style.display = state.viewIsLive ? 'none' : 'flex';
+    renderResults();
   }
 
   function renderResults(){
-    const items = state.computed.items;
-    const monthVal = $('#icaMonth').value;
-    $('#resMonthLabel').textContent = monthVal || 'sem competência definida';
+    const allItems = state.viewItems || [];
+    const items = getFilteredItems();
+
+    const filterChip = $('#filterChip');
+    if(state.activeFilter){
+      filterChip.style.display = 'inline-flex';
+      filterChip.innerHTML = `${state.activeFilter.type==='categoria'?'Categoria':'Empresa'}: <strong>${state.activeFilter.value}</strong> &nbsp;✕`;
+      filterChip.onclick = ()=>{ state.activeFilter = null; renderResults(); };
+    } else {
+      filterChip.style.display = 'none';
+      filterChip.innerHTML = '';
+      filterChip.onclick = null;
+    }
 
     const totalConsumo = items.reduce((s,i)=>s+i.consumo,0);
     const totalDisp = items.reduce((s,i)=>s+i.disponibilidade,0);
@@ -773,8 +893,12 @@
       <div class="ica-kpi"><div class="lbl">Itens expurgados</div><div class="val">${expurgados.toLocaleString('pt-BR')}</div><div class="sub">${fmtBRL(valorExpurgo)} tratados como disponíveis · Classes: ${classesLabel}</div></div>
     `;
 
-    renderBars($('#catBars'), aggregate(items, i=>i.categoria));
-    renderBars($('#empBars'), aggregate(items, i=>i.empresa));
+    // The dimension currently used as filter stays computed from ALL items (so you can switch selection);
+    // the other dimension reflects the filtered subset (drills down).
+    const catSource = (state.activeFilter && state.activeFilter.type==='categoria') ? allItems : items;
+    const empSource = (state.activeFilter && state.activeFilter.type==='empresa') ? allItems : items;
+    renderBars($('#catBars'), aggregate(catSource, i=>i.categoria), 'categoria', state.activeFilter && state.activeFilter.type==='categoria' ? state.activeFilter.value : null);
+    renderBars($('#empBars'), aggregate(empSource, i=>i.empresa), 'empresa', state.activeFilter && state.activeFilter.type==='empresa' ? state.activeFilter.value : null);
 
     const top = items.filter(i=>i.contrato==='Não').sort((a,b)=>b.consumo-a.consumo).slice(0,50);
     const tbl = $('#topItemsTable');
@@ -785,7 +909,6 @@
     if(!top.length) tbl.innerHTML += '<tr><td colspan="6" style="text-align:center;color:var(--text-dim);">Nenhum item sem contrato 🎉</td></tr>';
 
     $('#results').style.display='block';
-    $('#results').scrollIntoView({behavior:'smooth', block:'nearest'});
   }
 
   // ---------- HISTORY / TREND ----------
@@ -805,12 +928,15 @@
 
     const snapshot = { month, totalConsumo, totalDisp, totalItens, itensSemContrato, byCategoria, byEmpresa, savedAt: new Date().toISOString() };
     await saveStore('snapshot:'+month, snapshot, false);
+    await saveStore('snapshot-items:'+month, items, false);
 
     let index = await loadStore('snapshot-index', false) || [];
     if(!index.includes(month)){ index.push(month); index.sort(); await saveStore('snapshot-index', index, false); }
 
     toast(`Competência ${month} salva no histórico.`);
     renderTrend();
+    await populateResultMonthSelect();
+    switchResultView(month);
   }
 
   function fmtMonthLabel(m){
@@ -940,18 +1066,26 @@
 
   async function deleteSnapshot(month){
     await window.storage.delete('snapshot:'+month, false).catch(()=>{});
+    await window.storage.delete('snapshot-items:'+month, false).catch(()=>{});
     let index = await loadStore('snapshot-index', false) || [];
     index = index.filter(m=>m!==month);
     await saveStore('snapshot-index', index, false);
     toast(`Competência ${month} removida do histórico.`);
     renderTrend();
+    await populateResultMonthSelect();
+    if(state.viewMonthValue===month){
+      const remaining = await loadStore('snapshot-index', false) || [];
+      if(remaining.length) switchResultView(remaining[remaining.length-1]);
+      else if(state.computed) switchResultView('__live__');
+      else { state.viewItems=null; $('#results').style.display='none'; }
+    }
   }
 
   // ---------- EXPORT ----------
-  function exportExcel(){
-    if(!state.computed){ toast('Rode a apuração primeiro.'); return; }
-    const items = state.computed.items;
-    const month = $('#icaMonth').value || '';
+  function exportExcel(itemsOverride, monthOverride){
+    const items = itemsOverride || (state.computed ? state.computed.items : null);
+    if(!items){ toast('Rode a apuração primeiro.'); return; }
+    const month = monthOverride || $('#icaMonth').value || '';
 
     const wb = XLSX.utils.book_new();
 
@@ -1015,9 +1149,14 @@
     });
 
     $('#icaLog').textContent = '';
-    $('#results').style.display='none';
     refreshMappingUI();
     checkReady();
+    (async ()=>{
+      await populateResultMonthSelect();
+      const index = await loadStore('snapshot-index', false) || [];
+      if(index.length) await switchResultView(index.slice().sort().reverse()[0]);
+      else { state.viewItems = null; $('#results').style.display='none'; }
+    })();
 
     const cur = $('#icaMonth').value;
     if(cur){
@@ -1061,8 +1200,10 @@
   });
   $('#btnApurar').addEventListener('click', runApuracao);
   $('#btnSaveSnapshot').addEventListener('click', saveSnapshot);
-  $('#btnExport').addEventListener('click', exportExcel);
+  $('#btnExport').addEventListener('click', ()=>exportExcel());
+  $('#btnExportSaved').addEventListener('click', ()=>exportExcel(state.viewItems, state.viewMonthValue==='__live__'?$('#icaMonth').value:state.viewMonthValue));
   $('#btnResetMonth').addEventListener('click', resetForNewMonth);
+  $('#resultMonthSelect').addEventListener('change', (e)=> switchResultView(e.target.value));
   $('#btnClearStorage').addEventListener('click', ()=>{
     const btn = $('#btnClearStorage');
     armConfirm(btn, 'Limpar dados salvos', 'confirmar limpeza?', async ()=>{
