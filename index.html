@@ -741,6 +741,7 @@
           state.adminUnlocked = true;
           $('#adminTriggerWrap').style.display = 'none';
           $('#adminPanel').style.display = 'block';
+          renderTrend();
           callback();
           return true;
         }
@@ -756,6 +757,7 @@
     $('#adminPanel').style.display = 'none';
     $('#adminTriggerWrap').style.display = 'block';
     setFlowCollapsed(true);
+    renderTrend();
   });
 
   $('#btnChangePassword').addEventListener('click', ()=>{
@@ -1291,12 +1293,14 @@
         return `<div class="ica-snap-row">
           <span class="m">${s.month}</span>
           <span class="v">${fmtPct(v)} · ${s.itensSemContrato}/${s.totalItens} itens sem contrato</span>
-          <button class="ica-snap-del" data-month="${s.month}">excluir</button>
+          ${state.adminUnlocked ? `<button class="ica-snap-del" data-month="${s.month}">excluir</button>` : ''}
         </div>`;
       }).join('');
     $all('.ica-snap-del', listEl).forEach(btn=>{
       btn.addEventListener('click', ()=>{
-        armConfirm(btn, 'excluir', 'confirmar exclusão?', ()=>deleteSnapshot(btn.dataset.month));
+        requireAdmin(()=>{
+          armConfirm(btn, 'excluir', 'confirmar exclusão?', ()=>deleteSnapshot(btn.dataset.month));
+        });
       });
     });
   }
