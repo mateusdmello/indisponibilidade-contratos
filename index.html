@@ -1002,7 +1002,7 @@
     return (v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL',maximumFractionDigits:0});
   }
   function fmtPct(v){
-    return (v*100).toLocaleString('pt-BR',{maximumFractionDigits:1})+'%';
+    return (v*100).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})+'%';
   }
 
   function aggregate(items, keyFn){
